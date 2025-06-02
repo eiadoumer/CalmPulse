@@ -1,0 +1,543 @@
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ============================================================================ */
+/* BASE STYLES */
+/* ============================================================================ */
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: #f8fafc;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Remove default focus outline and add custom */
+*:focus {
+  outline: none;
+}
+
+*:focus-visible {
+  outline: 2px solid #3b82f6;
+  outline-offset: 2px;
+}
+
+/* ============================================================================ */
+/* CUSTOM ANIMATIONS */
+/* ============================================================================ */
+
+@keyframes heartbeat {
+  0%, 100% { 
+    transform: scale(1); 
+    opacity: 1;
+  }
+  25% { 
+    transform: scale(1.1); 
+    opacity: 0.9;
+  }
+  50% { 
+    transform: scale(1.05); 
+    opacity: 1;
+  }
+  75% { 
+    transform: scale(1.15); 
+    opacity: 0.8;
+  }
+}
+
+@keyframes breathe {
+  0%, 100% { 
+    transform: scale(1); 
+    opacity: 0.8;
+  }
+  50% { 
+    transform: scale(1.2); 
+    opacity: 1;
+  }
+}
+
+@keyframes pulse-ring {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(2.5);
+    opacity: 0;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+@keyframes shimmer {
+  0% {
+    background-position: -468px 0;
+  }
+  100% {
+    background-position: 468px 0;
+  }
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+@keyframes bounce {
+  0%, 20%, 53%, 80%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  40%, 43% {
+    transform: translate3d(0, -30px, 0);
+  }
+  70% {
+    transform: translate3d(0, -15px, 0);
+  }
+  90% {
+    transform: translate3d(0, -4px, 0);
+  }
+}
+
+/* ============================================================================ */
+/* ANIMATION UTILITY CLASSES */
+/* ============================================================================ */
+
+.heartbeat-animation {
+  animation: heartbeat 1.2s ease-in-out infinite;
+}
+
+.breathe-animation {
+  animation: breathe 8s ease-in-out infinite;
+}
+
+.pulse-ring-animation {
+  animation: pulse-ring 1.5s ease-out infinite;
+}
+
+.float-animation {
+  animation: float 3s ease-in-out infinite;
+}
+
+.fade-in {
+  animation: fadeIn 0.5s ease-out;
+}
+
+.slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+.bounce-animation {
+  animation: bounce 1s ease-out;
+}
+
+/* Loading shimmer effect */
+.shimmer {
+  background: linear-gradient(to right, #eeeeee 8%, #dddddd 18%, #eeeeee 33%);
+  background-size: 800px 104px;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+/* ============================================================================ */
+/* EMOTION COLOR GRADIENTS */
+/* ============================================================================ */
+
+.gradient-anxious {
+  background: linear-gradient(135deg, #fee2e2, #fca5a5, #ef4444);
+}
+
+.gradient-sad {
+  background: linear-gradient(135deg, #dbeafe, #93c5fd, #3b82f6);
+}
+
+.gradient-happy {
+  background: linear-gradient(135deg, #d1fae5, #6ee7b7, #10b981);
+}
+
+.gradient-neutral {
+  background: linear-gradient(135deg, #f3f4f6, #d1d5db, #6b7280);
+}
+
+/* Emotion-specific text colors */
+.text-emotion-anxious {
+  color: #dc2626;
+}
+
+.text-emotion-sad {
+  color: #2563eb;
+}
+
+.text-emotion-happy {
+  color: #059669;
+}
+
+.text-emotion-neutral {
+  color: #4b5563;
+}
+
+/* Emotion-specific background colors */
+.bg-emotion-anxious {
+  background-color: #fef2f2;
+  border-color: #fecaca;
+}
+
+.bg-emotion-sad {
+  background-color: #eff6ff;
+  border-color: #bfdbfe;
+}
+
+.bg-emotion-happy {
+  background-color: #ecfdf5;
+  border-color: #a7f3d0;
+}
+
+.bg-emotion-neutral {
+  background-color: #f9fafb;
+  border-color: #d1d5db;
+}
+
+/* ============================================================================ */
+/* BREATHING EXERCISE STYLES */
+/* ============================================================================ */
+
+.breathing-circle {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  margin: 0 auto;
+  transition: all 0.3s ease;
+}
+
+.breathing-circle::before {
+  content: '';
+  position: absolute;
+  top: -10px;
+  left: -10px;
+  right: -10px;
+  bottom: -10px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #a2d5f2, #7fb3d3);
+  opacity: 0.3;
+  animation: pulse-ring 4s ease-in-out infinite;
+}
+
+.breathing-circle.inhale {
+  transform: scale(1.3);
+  background: linear-gradient(45deg, #7fb3d3, #5b9bd5);
+}
+
+.breathing-circle.exhale {
+  transform: scale(0.8);
+  background: linear-gradient(45deg, #a2d5f2, #7fb3d3);
+}
+
+.breathing-circle.hold {
+  transform: scale(1.1);
+  background: linear-gradient(45deg, #5b9bd5, #4a90c2);
+}
+
+/* ============================================================================ */
+/* HEART RATE MONITOR STYLES */
+/* ============================================================================ */
+
+.heart-rate-pulse {
+  position: relative;
+  display: inline-block;
+}
+
+.heart-rate-pulse::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  border: 2px solid #ef4444;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: pulse-ring 1s ease-out infinite;
+}
+
+.heart-rate-pulse.high::after {
+  border-color: #dc2626;
+  animation-duration: 0.6s;
+}
+
+.heart-rate-pulse.low::after {
+  border-color: #3b82f6;
+  animation-duration: 1.2s;
+}
+
+/* ============================================================================ */
+/* AUDIO VISUALIZATION STYLES */
+/* ============================================================================ */
+
+.audio-wave {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+}
+
+.audio-wave-bar {
+  width: 3px;
+  background-color: #3b82f6;
+  border-radius: 2px;
+  animation: audio-wave 1.5s ease-in-out infinite;
+}
+
+.audio-wave-bar:nth-child(1) { animation-delay: 0s; height: 20px; }
+.audio-wave-bar:nth-child(2) { animation-delay: 0.1s; height: 30px; }
+.audio-wave-bar:nth-child(3) { animation-delay: 0.2s; height: 25px; }
+.audio-wave-bar:nth-child(4) { animation-delay: 0.3s; height: 35px; }
+.audio-wave-bar:nth-child(5) { animation-delay: 0.4s; height: 28px; }
+
+@keyframes audio-wave {
+  0%, 100% {
+    transform: scaleY(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scaleY(0.3);
+    opacity: 1;
+  }
+}
+
+/* ============================================================================ */
+/* NOTIFICATION STYLES */
+/* ============================================================================ */
+
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1000;
+  max-width: 400px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  animation: slideIn 0.3s ease-out;
+}
+
+.notification.success {
+  border-left: 4px solid #10b981;
+}
+
+.notification.warning {
+  border-left: 4px solid #f59e0b;
+}
+
+.notification.error {
+  border-left: 4px solid #ef4444;
+}
+
+.notification.info {
+  border-left: 4px solid #3b82f6;
+}
+
+/* ============================================================================ */
+/* LOADING STATES */
+/* ============================================================================ */
+
+.skeleton {
+  background: linear-gradient(90deg, #f0f0f0 25%, transparent 37%, #f0f0f0 63%);
+  background-size: 400% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+}
+
+.loading-dots {
+  display: inline-block;
+}
+
+.loading-dots::after {
+  content: '';
+  animation: loading-dots 1.5s steps(4, end) infinite;
+}
+
+@keyframes loading-dots {
+  0%, 20% { content: ''; }
+  40% { content: '.'; }
+  60% { content: '..'; }
+  80%, 100% { content: '...'; }
+}
+
+/* Spinner animation */
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3b82f6;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ============================================================================ */
+/* RESPONSIVE UTILITIES */
+/* ============================================================================ */
+
+/* Hide scrollbar but keep functionality */
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+/* Smooth scrolling */
+.smooth-scroll {
+  scroll-behavior: smooth;
+}
+
+/* ============================================================================ */
+/* ACCESSIBILITY IMPROVEMENTS */
+/* ============================================================================ */
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .gradient-anxious,
+  .gradient-sad,
+  .gradient-happy,
+  .gradient-neutral {
+    background: none;
+    border: 2px solid currentColor;
+  }
+}
+
+/* Dark mode support (if needed later) */
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: #1f2937;
+    color: #f9fafb;
+  }
+  
+  .skeleton {
+    background: linear-gradient(90deg, #374151 25%, transparent 37%, #374151 63%);
+  }
+}
+
+/* ============================================================================ */
+/* PRINT STYLES */
+/* ============================================================================ */
+
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  body {
+    background: white !important;
+    color: black !important;
+  }
+  
+  /* Remove animations for print */
+  * {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* ============================================================================ */
+/* CUSTOM SCROLLBAR */
+/* ============================================================================ */
+
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+/* ============================================================================ */
+/* UTILITY CLASSES */
+/* ============================================================================ */
+
+.text-shadow {
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.glass-effect {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.hover-lift {
+  transition: transform 0.2s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+}
+
+.focus-ring {
+  transition: box-shadow 0.2s ease;
+}
+
+.focus-ring:focus {
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.5);
+}
