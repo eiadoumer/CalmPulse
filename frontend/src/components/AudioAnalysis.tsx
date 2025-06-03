@@ -105,7 +105,6 @@ const AudioAnalysis: React.FC = () => {
       }
     }
   };
-
   const analyzeAudio = async () => {
     const audioFile = uploadedFile || (recordedBlob ? new File([recordedBlob], 'recording.wav', { type: 'audio/wav' }) : null);
     
@@ -113,21 +112,35 @@ const AudioAnalysis: React.FC = () => {
       setError('No audio file to analyze. Please record or upload an audio file.');
       return;
     }
-
+  
     setIsAnalyzing(true);
     setError(null);
-
+  
     try {
-      const result = await emotionService.analyzeAudio(audioFile);
-      setAnalysisResult(result);
+      // Create FormData and append the audio file
+      const formData = new FormData();
+      formData.append('file', audioFile);
+  
+      const response = await fetch('http://localhost:8000/api/audio/analyze-simple', {
+        method: 'POST',
+        body: formData,
+      });
+  
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`HTTP ${response.status}: ${errorText}`);
+      }
+  
+      const data: AudioAnalysisResult = await response.json();
+      setAnalysisResult(data);
     } catch (err) {
-      setError('Failed to analyze audio. Please try again.');
+      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
+      setError(`Failed to analyze audio: ${errorMessage}`);
       console.error('Audio analysis error:', err);
     } finally {
       setIsAnalyzing(false);
     }
   };
-
   const clearAudio = () => {
     setUploadedFile(null);
     setRecordedBlob(null);
