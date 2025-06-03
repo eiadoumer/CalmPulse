@@ -54,11 +54,18 @@ const Dashboard: React.FC<DashboardProps> = ({ user, onLogout }) => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center py-4">
             <div className="flex items-center space-x-3">
-              <div className="w-10 h-10 bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg flex items-center justify-center">
-                <span className="text-white font-bold text-lg">🧠</span>
+              <div className="w-10 h-10">
+                <img
+                  src="/brainstorm.png"
+                  alt="CalmPulse Logo"
+                  className="w-full h-full object-contain"
+                />
               </div>
               <div>
-                <h1 className="text-2xl font-bold text-gray-900">CalmPulse</h1>
+                <h1 className="text-3xl font-bold" style={{ fontFamily: 'Orbitron, sans-serif', color: '#ff9ea7' }}>
+  CalmPulse
+</h1>
+
                 <p className="text-sm text-gray-500">Emotion Detection for Autism Support</p>
               </div>
             </div>
