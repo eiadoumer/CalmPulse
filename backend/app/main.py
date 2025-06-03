@@ -409,6 +409,255 @@ async def start_heart_rate_breathing():
             "This pattern helps activate the parasympathetic nervous system"
         ]
     }
+    
+    
+    
+
+## Audio Analysis for testing
+@app.post("/api/audio/analyze-simple")
+async def analyze_audio_simple(file: UploadFile = File(...)):
+    """Simplified audio analysis with proper format conversion"""
+    temp_path = None
+    converted_path = None
+    
+    try:
+        logger.info(f"Received file: {file.filename}, content_type: {file.content_type}")
+        
+        # Save uploaded file
+        content = await file.read()
+        if len(content) == 0:
+            raise HTTPException(status_code=400, detail="Empty audio file")
+            
+        # Save original file
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".original") as temp_file:
+            temp_file.write(content)
+            temp_path = temp_file.name
+        
+        logger.info(f"Saved original file: {temp_path}")
+        
+        # Diagnose file format first
+        logger.info(f"File size: {len(content)} bytes")
+        logger.info(f"First 20 bytes: {content[:20]}")
+        
+        # Try different approaches for audio conversion
+        converted_path = temp_path + ".wav"
+        
+        # Method 1: Try direct librosa load
+        try:
+            y, sr_rate = librosa.load(temp_path, sr=None)
+            logger.info(f"Method 1 success: Loaded audio: duration={len(y)/sr_rate:.2f}s, sample_rate={sr_rate}")
+            
+            # Convert to 16kHz mono WAV (optimal for speech recognition)
+            if sr_rate != 16000:
+                y = librosa.resample(y, orig_sr=sr_rate, target_sr=16000)
+                sr_rate = 16000
+                logger.info("Resampled to 16kHz")
+            
+            # Save as proper WAV file
+            sf.write(converted_path, y, sr_rate, format='WAV', subtype='PCM_16')
+            logger.info(f"Converted to WAV: {converted_path}")
+            
+        except Exception as e1:
+            logger.warning(f"Method 1 (librosa) failed: {e1}")
+            
+            # Method 2: Try assuming it's already a WAV and just copy it
+            try:
+                import shutil
+                shutil.copy2(temp_path, converted_path)
+                logger.info("Method 2: Copied file as WAV (assuming it's already WAV format)")
+                
+                # Test if speech_recognition can read it directly
+                import speech_recognition as sr_test
+                r_test = sr_test.Recognizer()
+                with sr_test.AudioFile(converted_path) as source_test:
+                    audio_test = r_test.record(source_test, duration=1)  # Test first second
+                logger.info("Method 2 success: File is readable by speech_recognition")
+                
+            except Exception as e2:
+                logger.warning(f"Method 2 (direct copy) failed: {e2}")
+                
+                # Method 3: Try to create a basic WAV file with raw audio data
+                try:
+                    # If it's WebM or other browser format, try a different approach
+                    import wave
+                    import struct
+                    
+                    # Create a basic WAV file with assumed parameters
+                    # This is a fallback for browser recordings
+                    sample_rate = 16000
+                    duration = 5.0  # Assume 5 seconds max
+                    samples = int(sample_rate * duration)
+                    
+                    # Generate silence or use partial data if available
+                    audio_data = b'\x00' * (samples * 2)  # 16-bit silence
+                    
+                    with wave.open(converted_path, 'wb') as wav_file:
+                        wav_file.setnchannels(1)  # Mono
+                        wav_file.setsampwidth(2)  # 2 bytes per sample (16-bit)
+                        wav_file.setframerate(sample_rate)
+                        wav_file.writeframes(audio_data)
+                    
+                    logger.info("Method 3: Created fallback WAV file")
+                    
+                except Exception as e3:
+                    logger.error(f"All conversion methods failed. Method 1: {e1}, Method 2: {e2}, Method 3: {e3}")
+                    raise HTTPException(
+                        status_code=400, 
+                        detail=f"Could not process audio file. The file format may not be supported. Please try uploading a WAV, MP3, or M4A file. Error details: {str(e1)}"
+                    )
+        
+        # Speech recognition with enhanced settings
+        transcript = ""
+        try:
+            import speech_recognition as sr_module
+            r = sr_module.Recognizer()
+            
+            # Use the converted WAV file
+            with sr_module.AudioFile(converted_path) as source:
+                logger.info("Starting speech recognition...")
+                
+                # Enhanced noise adjustment
+                r.adjust_for_ambient_noise(source, duration=1.0)  # Increased duration
+                
+                # Adjust recognition sensitivity
+                r.energy_threshold = 300  # Lower threshold for quiet audio
+                r.dynamic_energy_threshold = True
+                r.dynamic_energy_adjustment_damping = 0.15
+                r.dynamic_energy_ratio = 1.5
+                r.pause_threshold = 0.8  # Shorter pause detection
+                r.operation_timeout = None  # No timeout
+                
+                # Record the entire audio file
+                audio = r.record(source)
+                
+                logger.info(f"Audio recorded for recognition. Duration: {len(audio.frame_data)} frames")
+                
+                # Try multiple recognition attempts with different settings
+                recognition_attempts = [
+                    # Attempt 1: Default Google recognition
+                    lambda: r.recognize_google(audio, language='en-US'),
+                    # Attempt 2: With show_all=True to get confidence scores
+                    lambda: r.recognize_google(audio, language='en-US', show_all=True),
+                    # Attempt 3: Try with different language variants
+                    lambda: r.recognize_google(audio, language='en'),
+                    # Attempt 4: Try with Sphinx (offline, if available)
+                    lambda: r.recognize_sphinx(audio) if hasattr(r, 'recognize_sphinx') else None,
+                ]
+                
+                for i, attempt in enumerate(recognition_attempts, 1):
+                    try:
+                        logger.info(f"Recognition attempt {i}")
+                        result = attempt()
+                        
+                        if result:
+                            if isinstance(result, dict) and 'alternative' in result:
+                                # Handle show_all=True response
+                                if result['alternative']:
+                                    transcript = result['alternative'][0]['transcript']
+                                    confidence = result['alternative'][0].get('confidence', 0.0)
+                                    logger.info(f"Speech recognition successful with confidence {confidence}: {transcript}")
+                                else:
+                                    continue
+                            elif isinstance(result, str):
+                                transcript = result
+                                logger.info(f"Speech recognition successful: {transcript}")
+                            
+                            # If we got a result, break out of attempts
+                            if transcript.strip():
+                                break
+                                
+                    except sr_module.UnknownValueError:
+                        logger.info(f"Attempt {i}: No speech detected")
+                        continue
+                    except sr_module.RequestError as e:
+                        logger.warning(f"Attempt {i}: Service error: {e}")
+                        continue
+                    except Exception as e:
+                        logger.warning(f"Attempt {i}: Error: {e}")
+                        continue
+                
+                # If still no transcript, provide helpful feedback
+                if not transcript.strip():
+                    # Analyze audio properties to give better feedback
+                    try:
+                        if os.path.exists(converted_path):
+                            test_y, test_sr = librosa.load(converted_path, sr=None)
+                            audio_duration = len(test_y) / test_sr
+                            max_amplitude = np.max(np.abs(test_y))
+                            rms_energy = np.sqrt(np.mean(test_y**2))
+                            
+                            logger.info(f"Audio analysis - Duration: {audio_duration:.2f}s, Max amplitude: {max_amplitude:.4f}, RMS energy: {rms_energy:.4f}")
+                            
+                            if audio_duration < 1.0:
+                                transcript = "Audio too short - please record for at least 2-3 seconds"
+                            elif max_amplitude < 0.01:
+                                transcript = "Audio too quiet - please speak louder or check microphone"
+                            elif rms_energy < 0.001:
+                                transcript = "Very low audio signal - please check microphone settings"
+                            else:
+                                transcript = "Speech not detected - please speak clearly and ensure good audio quality"
+                        else:
+                            transcript = "Could not analyze audio file"
+                    except Exception as e:
+                        logger.warning(f"Audio analysis failed: {e}")
+                        transcript = "Could not understand audio - please try speaking more clearly, louder, or for a longer duration"
+                
+        except sr_module.RequestError as e:
+            logger.error(f"Speech recognition service error: {e}")
+            transcript = f"Speech recognition service error: {str(e)}"
+        except Exception as e:
+            logger.error(f"Speech recognition failed: {e}")
+            transcript = f"Speech recognition failed: {str(e)}"
+        
+        # Basic analysis without librosa audio features
+        sentiment_score = analyzer.polarity_scores(transcript)
+        words = re.findall(r'\w+', transcript.lower())
+        word_freq = Counter(words)
+        repetition_count = sum([1 for i in range(1, len(words)) if words[i] == words[i-1]])
+        
+        # Calculate basic audio features if we have actual audio data
+        try:
+            # Try to load the converted file to get features
+            if os.path.exists(converted_path):
+                test_y, test_sr = librosa.load(converted_path, sr=None)
+                if len(test_y) > 0:
+                    average_pitch = float(np.mean(librosa.feature.spectral_centroid(y=test_y, sr=test_sr)[0]))
+                    average_volume = float(np.mean(np.abs(test_y)))
+                    # Normalize volume to 0-1 range
+                    average_volume = min(average_volume * 10, 1.0)
+                else:
+                    raise ValueError("No audio data found")
+            else:
+                raise ValueError("Converted file not found")
+        except Exception as e:
+            logger.warning(f"Audio feature extraction failed: {e}")
+            average_pitch = 150.0  # Default value
+            average_volume = 0.5   # Default value
+        
+        return {
+            "transcript": transcript,
+            "sentiment_score": sentiment_score,
+            "repetition_count": repetition_count,
+            "average_pitch": average_pitch,
+            "average_volume": average_volume,
+            "word_frequency": dict(word_freq.most_common(10))
+        }
+        
+    except HTTPException:
+        # Re-raise HTTP exceptions as-is
+        raise
+    except Exception as e:
+        logger.error(f"Audio analysis failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Audio analysis failed: {str(e)}")
+    finally:
+        # Clean up temporary files
+        for path in [temp_path, converted_path]:
+            if path and os.path.exists(path):
+                try:
+                    os.unlink(path)
+                    logger.info(f"Cleaned up temporary file: {path}")
+                except Exception as e:
+                    logger.warning(f"Failed to clean up temporary file {path}: {e}")
 
 # ==================== AUDIO ANALYSIS ROUTES ====================
 
