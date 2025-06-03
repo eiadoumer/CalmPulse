@@ -438,25 +438,35 @@ async def analyze_audio(file: UploadFile = File(...)):
         logger.info(f"Saved temporary file: {temp_path}")
         
         try:
-            # Load audio file
-            y, sr = librosa.load(temp_path)
-            logger.info(f"Loaded audio: duration={len(y)/sr:.2f}s, sample_rate={sr}")
+            # Load audio file with better error handling
+            try:
+                y, sr = librosa.load(temp_path)
+                logger.info(f"Loaded audio: duration={len(y)/sr:.2f}s, sample_rate={sr}")
+            except Exception as e:
+                logger.error(f"Failed to load audio with librosa: {e}")
+                raise Exception(f"Could not load audio file. Please ensure it's a valid audio format.")
             
-            # Speech recognition
+            # Speech recognition with better error handling
             r = sr.Recognizer()
             transcript = ""
             
             try:
+                # Try using the temporary file directly
                 with sr.AudioFile(temp_path) as source:
+                    # Adjust for ambient noise
+                    r.adjust_for_ambient_noise(source, duration=0.5)
                     audio = r.record(source)
                     transcript = r.recognize_google(audio)
                     logger.info(f"Transcript: {transcript}")
             except sr.UnknownValueError:
-                transcript = "Could not understand audio"
+                transcript = "Could not understand audio - please speak more clearly"
                 logger.warning("Speech recognition failed - no speech detected")
             except sr.RequestError as e:
                 logger.error(f"Speech recognition service error: {e}")
-                transcript = "Speech recognition service unavailable"
+                transcript = "Speech recognition service temporarily unavailable"
+            except Exception as e:
+                logger.error(f"Unexpected speech recognition error: {e}")
+                transcript = "Error processing audio for speech recognition"
             
             # Sentiment analysis
             sentiment_score = analyzer.polarity_scores(transcript)
@@ -466,19 +476,28 @@ async def analyze_audio(file: UploadFile = File(...)):
             word_freq = Counter(words)
             
             # Repetition detection
-            repetition_count = sum([1 for i in range(1, len(words)) if words[i] == words[i-1]])
+            repetition_count = sum([1 for i in range(1, len(words)) if len(words) > i and words[i] == words[i-1]])
             
-            # Pitch analysis
+            # Pitch analysis with better error handling
             try:
                 pitches, magnitudes = librosa.piptrack(y=y, sr=sr)
-                pitch_values = pitches[magnitudes > np.median(magnitudes)]
-                avg_pitch = float(np.mean(pitch_values)) if len(pitch_values) > 0 else 0.0
+                if len(pitches) > 0 and len(magnitudes) > 0:
+                    pitch_values = pitches[magnitudes > np.median(magnitudes)]
+                    avg_pitch = float(np.mean(pitch_values)) if len(pitch_values) > 0 else 0.0
+                else:
+                    avg_pitch = 0.0
             except Exception as e:
                 logger.warning(f"Pitch analysis failed: {e}")
                 avg_pitch = 0.0
             
             # Volume analysis
-            avg_volume = float(np.mean(np.abs(y)))
+            try:
+                avg_volume = float(np.mean(np.abs(y)))
+                # Normalize volume to 0-1 range
+                avg_volume = min(avg_volume * 10, 1.0)  # Scale and cap at 1.0
+            except Exception as e:
+                logger.warning(f"Volume analysis failed: {e}")
+                avg_volume = 0.5  # Default value
             
             result = AudioAnalysisResult(
                 transcript=transcript,
@@ -500,6 +519,9 @@ async def analyze_audio(file: UploadFile = File(...)):
             except Exception as e:
                 logger.warning(f"Failed to clean up temporary file: {e}")
         
+    except HTTPException:
+        # Re-raise HTTP exceptions as-is
+        raise
     except Exception as e:
         logger.error(f"Audio analysis failed: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Audio analysis failed: {str(e)}")

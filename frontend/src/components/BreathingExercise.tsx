@@ -65,7 +65,7 @@ const BreathingExercise: React.FC<BreathingExerciseProps> = ({ onClose }) => {
             timeRemaining: nextPhase.duration,
             cycleCount: newCycleCount,
             isActive: false,
-            progress: 100,
+            progress: 0,
           };
         }
       }
@@ -75,37 +75,54 @@ const BreathingExercise: React.FC<BreathingExerciseProps> = ({ onClose }) => {
         phase: nextPhaseName,
         timeRemaining: nextPhase.duration,
         cycleCount: newCycleCount,
+        progress: 0, 
       };
     });
   }, [phases]);
-
-  const tick = useCallback(() => {
-    setBreathingState(prev => {
-      if (!prev.isActive) return prev;
-      
-      const newTimeRemaining = prev.timeRemaining - 0.1;
-      const currentPhase = phases[prev.phase];
-      const progress = ((currentPhase.duration - newTimeRemaining) / currentPhase.duration) * 100;
-      
-      if (newTimeRemaining <= 0) {
-        // Move to next phase
-        setTimeout(nextPhase, 100);
-        return prev;
-      }
-      
+const tick = useCallback(() => {
+  setBreathingState(prev => {
+    if (!prev.isActive) return prev;
+    
+    const newTimeRemaining = prev.timeRemaining - 0.1;
+    const currentPhase = phases[prev.phase];
+    const progress = ((currentPhase.duration - newTimeRemaining) / currentPhase.duration) * 100;
+    
+    
+    if (newTimeRemaining <= 0.05) { // Small buffer to prevent quick transitions
+      // Don't immediately call nextPhase, let it happen on next tick
       return {
         ...prev,
-        timeRemaining: newTimeRemaining,
-        progress: Math.max(0, Math.min(100, progress)),
+        timeRemaining: 0,
+        progress: 100,
       };
-    });
-  }, [phases, nextPhase]);
+    }
+    
+    return {
+      ...prev,
+      timeRemaining: Math.max(0, newTimeRemaining), // Prevent negative time
+      progress: Math.max(0, Math.min(100, progress)),
+    };
+  });
+}, [phases]);
 
+
+// Add separate effect for phase transitions
+useEffect(() => {
+    if (breathingState.timeRemaining <= 0 && breathingState.isActive) {
+      const timer = setTimeout(() => {
+        nextPhase();
+      }, 200); // Small delay to prevent rapid transitions
+      
+      return () => clearTimeout(timer);
+    }
+  }, [breathingState.timeRemaining, breathingState.isActive, nextPhase]);
+  
+  // 🔧 ADD THIS - Main timer effect (THIS IS WHAT'S MISSING!)
   useEffect(() => {
     let interval: NodeJS.Timeout;
     
     if (breathingState.isActive) {
-      interval = setInterval(tick, 100);
+      interval = setInterval(tick, 100); // Run tick every 100ms
     }
     
     return () => {
