@@ -4,6 +4,8 @@
 /node_modules
 /.pnp
 .pnp.js
+.gitignore
+../backend/app/__pycache__
 
 # testing
 /coverage

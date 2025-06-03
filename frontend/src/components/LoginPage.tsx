@@ -46,9 +46,14 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
         <div className="bg-white rounded-3xl shadow-2xl p-8 backdrop-blur-sm">
           {/* Logo and Header */}
           <div className="text-center mb-8">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-600 rounded-2xl mb-6 shadow-lg">
-              <span className="text-white text-2xl">🧠</span>
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl overflow-hidden mb-6 shadow-lg bg-gradient-to-r from-blue-500 to-purple-600">
+              <img
+                src="/brainstorm1.png"
+                alt="CalmPulse Logo"
+                className="w-10 h-10 object-contain"
+              />
             </div>
+
             <h1 className="text-3xl font-bold text-gray-900 mb-2">Welcome to CalmPulse</h1>
             <p className="text-gray-600">Sign in to continue your emotional wellness journey</p>
           </div>

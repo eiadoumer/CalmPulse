@@ -347,4 +347,5 @@ export interface EmotionFactors {
     AUDIO_VOLUME: '/api/audio/volume',
     BREATHING_START: '/api/breathing/start',
     HEALTH_CHECK: '/health',
+    AUDIO_ANALYZE_SIMPLE:'/api/audio/analyze-simple'
   } as const;
