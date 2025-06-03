@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome to Our Site</title>
+    <style>
+		/* Navbar Styles */
+		.navbar {
+		  background-color: #A6AEBF;
+		  display: flex;
+		  justify-content: center;
+		  padding: 1rem;
+		  flex-wrap: wrap;
+		}
+
+		.navbar a {
+		  color: #000;
+		  text-decoration: none;
+		  padding: 0.5rem 1rem;
+		  margin: 0 0.5rem;
+		  background-color: #D0E8C5;
+		  border-radius: 6px;
+		  font-weight: bold;
+		  transition: background-color 0.3s;
+		}
+
+		.navbar a:hover {
+		  background-color: #A4CCD9;
+		}
+        /* Base Styles */
+        :root {
+            --primary-color: #6c5ce7;
+            --secondary-color: #a29bfe;
+            --accent-color: #C7D9DD;
+            --light-color: #f8f9fa;
+            --dark-color: #343a40;
+            --soft-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #fef6f6;
+            color: var(--dark-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        
+        /* Layout */
+        .container {
+            display: flex;
+            min-height: 100vh;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            position: relative;
+        }
+        
+        .content {
+            position: relative;
+            z-index: 1;
+            max-width: 1000px;
+            width: 100%;
+            text-align: center;
+        }
+        
+        /* Typography */
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            color: #ADB2D4;
+            font-weight: 600;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        p {
+            font-size: 1.1rem;
+            margin-bottom: 2rem;
+            color: #555;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        /* Video Container */
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+            overflow: hidden;
+            margin: 2rem auto;
+            border-radius: 12px;
+            box-shadow: var(--soft-shadow);
+            background-color: white;
+            max-width: 800px;
+        }
+        
+        .video-container iframe,
+        .video-container video {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        /* Animal Container */
+        .pet-wrapper {
+            position: fixed;
+            z-index: 0;
+            pointer-events: none;
+            width: 100%;
+            height: 100%;
+        }
+        
+        /* Base pet styles */
+        .pet {
+            position: absolute;
+            animation-duration: 4s;
+            animation-iteration-count: infinite;
+            animation-timing-function: ease-in-out;
+        }
+       
+        /* DOG */
+        .dog {
+            width: 90px;
+            height: 60px;
+            background: #f7d794;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            top: 15%;
+            right: 5%;
+            animation-name: dog-bounce;
+        }
+        
+        .dog:before, .dog:after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #f7d794;
+            top: -15px;
+            border-radius: 50%;
+        }
+        
+        .dog:before { left: 10px; transform: rotate(-20deg); }
+        .dog:after { right: 10px; transform: rotate(20deg); }
+        
+        .dog .eye {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #2d3436;
+            border-radius: 50%;
+            top: 15px;
+        }
+        
+        .dog .eye.left { left: 20px; }
+        .dog .eye.right { right: 20px; }
+        
+        .dog .nose {
+            position: absolute;
+            width: 15px;
+            height: 10px;
+            background: #2d3436;
+            border-radius: 50%;
+            top: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .dog .tongue {
+            position: absolute;
+            width: 15px;
+            height: 10px;
+            background: #e77f67;
+            border-radius: 0 0 10px 10px;
+            bottom: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: pant 0.5s infinite alternate;
+        }
+        
+        @keyframes dog-bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-15px); }
+        }
+        
+        @keyframes pant {
+            0% { height: 10px; }
+            100% { height: 15px; }
+        }
+        
+        /* GUINEA PIG */
+        .guinea-pig {
+            width: 70px;
+            height: 50px;
+            background: #cf6a87;
+            border-radius: 50%;
+            top: 15%;
+            left: 3%;
+            animation-name: guinea-wiggle;
+        }
+        
+        .guinea-pig .ear {
+            position: absolute;
+            width: 10px;
+            height: 15px;
+            background: #cf6a87;
+            top: -5px;
+            border-radius: 5px;
+        }
+        
+        .guinea-pig .ear.left { left: 15px; transform: rotate(-30deg); }
+        .guinea-pig .ear.right { right: 15px; transform: rotate(30deg); }
+        
+        .guinea-pig .eye {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: #2d3436;
+            border-radius: 50%;
+            top: 15px;
+        }
+        
+        .guinea-pig .eye.left { left: 20px; }
+        .guinea-pig .eye.right { right: 20px; }
+        
+        .guinea-pig .nose {
+            position: absolute;
+            width: 8px;
+            height: 5px;
+            background: #2d3436;
+            border-radius: 50%;
+            top: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        @keyframes guinea-wiggle {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(5deg); }
+            75% { transform: rotate(-5deg); }
+        }
+        
+        /* RABBIT */
+        .rabbit {
+            width: 60px;
+            height: 80px;
+            background: #e6e6e6;
+            border-radius: 50% 50% 40% 40%;
+            top:42%;
+            right: 15%;
+            animation-name: rabbit-hop;
+        }
+        
+        .rabbit .ear {
+            position: absolute;
+            width: 10px;
+            height: 30px;
+            background: #e6e6e6;
+            top: -25px;
+            border-radius: 5px;
+        }
+        
+        .rabbit .ear.left { left: 15px; }
+        .rabbit .ear.right { right: 15px; }
+        
+        .rabbit .eye {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #2d3436;
+            border-radius: 50%;
+            top: 20px;
+        }
+        
+        .rabbit .eye.left { left: 15px; }
+        .rabbit .eye.right { right: 15px; }
+        
+        .rabbit .nose {
+            position: absolute;
+            width: 6px;
+            height: 4px;
+            background: #ff9ff3;
+            border-radius: 50%;
+            top: 35px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .rabbit .mouth {
+            position: absolute;
+            width: 10px;
+            height: 5px;
+            border-bottom: 2px solid #2d3436;
+            border-radius: 0 0 10px 10px;
+            bottom: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        @keyframes rabbit-hop {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-20px); }
+        }
+        
+        
+        /* FISH */
+        .fish {
+            width: 60px;
+            height: 30px;
+            background: #74b9ff;
+            border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+            top: 40%;
+            left: 15%;
+            animation-name: fish-swim;
+        }
+        
+        .fish:before {
+            content: '';
+            position: absolute;
+            width: 10px;
+            height: 20px;
+            background: #74b9ff;
+            right: -5px;
+            top: 5px;
+            transform: rotate(45deg);
+            border-radius: 5px;
+        }
+        
+        .fish .eye {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: #2d3436;
+            border-radius: 50%;
+            top: 10px;
+            left: 10px;
+        }
+        
+        .fish .fin {
+            position: absolute;
+            width: 5px;
+            height: 15px;
+            background: #0984e3;
+            top: 5px;
+            left: 20px;
+            border-radius: 5px;
+        }
+        
+        @keyframes fish-swim {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(10px); }
+        }
+        
+        /* TURTLE */
+        .turtle {
+            width: 70px;
+            height: 50px;
+            background: #00b894;
+            border-radius: 50% 50% 40% 40%;
+            top: 60%;
+            right: 5%;
+            animation-name: turtle-crawl;
+        }
+        
+        .turtle .shell {
+            position: absolute;
+            width: 60px;
+            height: 40px;
+            background: #00a884;
+            border-radius: 50%;
+            top: 5px;
+            left: 5px;
+        }
+        
+        .turtle .head {
+            position: absolute;
+            width: 15px;
+            height: 10px;
+            background: #00b894;
+            border-radius: 50%;
+            top: 20px;
+            left: -5px;
+        }
+        
+        .turtle .eye {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: #2d3436;
+            border-radius: 50%;
+            top: 22px;
+            left: 0;
+        }
+        
+        .turtle .leg {
+            position: absolute;
+            width: 8px;
+            height: 5px;
+            background: #00b894;
+            border-radius: 50%;
+            bottom: 5px;
+        }
+        
+        .turtle .leg.left { left: 10px; }
+        .turtle .leg.right { right: 10px; }
+        
+        @keyframes turtle-crawl {
+            0%, 100% { transform: translateX(0); }
+            50% { transform: translateX(5px); }
+        }
+        
+        /* HAMSTER */
+        .hamster {
+            width: 60px;
+            height: 50px;
+            background: #fdcb6e;
+            border-radius: 50%;
+            top: 80%;
+            left: 15%;
+            animation-name: hamster-sniff;
+        }
+        
+        .hamster .ear {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            background: #e17055;
+            border-radius: 50%;
+            top: 5px;
+        }
+        
+        .hamster .ear.left { left: 10px; }
+        .hamster .ear.right { right: 10px; }
+        
+        .hamster .eye {
+            position: absolute;
+            width: 5px;
+            height: 5px;
+            background: #2d3436;
+            border-radius: 50%;
+            top: 15px;
+        }
+        
+        .hamster .eye.left { left: 15px; }
+        .hamster .eye.right { right: 15px; }
+        
+        .hamster .nose {
+            position: absolute;
+            width: 5px;
+            height: 3px;
+            background: #e17055;
+            border-radius: 50%;
+            top: 25px;
+            left: 50%;
+            transform: translateX(-50%);
+        }
+        
+        .hamster .cheek {
+            position: absolute;
+            width: 10px;
+            height: 8px;
+            background: #fab1a0;
+            border-radius: 50%;
+            top: 20px;
+        }
+        
+        .hamster .cheek.left { left: 5px; }
+        .hamster .cheek.right { right: 5px; }
+        
+        @keyframes hamster-sniff {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        
+       
+		/* Penguin Styles */
+.penguin {
+    width: 80px;
+    height: 100px;
+    position: absolute;
+    top: 55%;
+    left: 3%;
+    animation: penguin-wobble 3s infinite alternate;
+    z-index: 1;
+}
+
+.penguin-body {
+    width: 60px;
+    height: 90px;
+    background-color: #000;
+    border-radius: 50% 50% 45% 45% / 55% 55% 45% 45%;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+}
+
+.penguin-belly {
+    width: 45px;
+    height: 60px;
+    background-color: #fff;
+    border-radius: 50%;
+    position: absolute;
+    top: 25px;
+    left: 17px;
+}
+
+.penguin-head {
+    width: 50px;
+    height: 45px;
+    background-color: #000;
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+    left: 15px;
+}
+
+.penguin-eye {
+    width: 8px;
+    height: 8px;
+    background-color: #fff;
+    border-radius: 50%;
+    position: absolute;
+    top: 15px;
+}
+
+.penguin-eye.left { left: 30px; }
+.penguin-eye.right { left: 45px; }
+
+.penguin-eye:after {
+    content: '';
+    width: 4px;
+    height: 4px;
+    background-color: #000;
+    border-radius: 50%;
+    position: absolute;
+    top: 2px;
+    left: 2px;
+}
+
+.penguin-beak {
+    width: 15px;
+    height: 8px;
+    background-color: #ffa500;
+    border-radius: 50% 50% 30% 30%;
+    position: absolute;
+    top: 25px;
+    left: 45px;
+    transform: rotate(-10deg);
+}
+
+.penguin-flipper {
+    width: 25px;
+    height: 15px;
+    background-color: #000;
+    border-radius: 50%;
+    position: absolute;
+    top: 40px;
+}
+
+.penguin-flipper.left {
+    left: 0;
+    transform: rotate(20deg);
+    animation: flipper-left 1s infinite alternate;
+}
+
+.penguin-flipper.right {
+    right: 0;
+    transform: rotate(-20deg);
+    animation: flipper-right 1s infinite alternate;
+}
+
+.penguin-foot {
+    width: 15px;
+    height: 8px;
+    background-color: #ffa500;
+    border-radius: 50% 50% 0 0;
+    position: absolute;
+    bottom: 0;
+}
+
+.penguin-foot.left { left: 25px; transform: rotate(-10deg); }
+.penguin-foot.right { right: 25px; transform: rotate(10deg); }
+
+@keyframes penguin-wobble {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(5deg); }
+}
+
+@keyframes flipper-left {
+    0% { transform: rotate(20deg); }
+    100% { transform: rotate(40deg); }
+}
+
+@keyframes flipper-right {
+    0% { transform: rotate(-20deg); }
+    100% { transform: rotate(-40deg); }
+} 
+			/* Whale Styles */
+.whale {
+    width: 120px;
+    height: 60px;
+    position: absolute;
+    top: 80%;
+    right: 10%;
+    animation: whale-swim 4s infinite ease-in-out;
+    z-index: 1;
+}
+
+.whale-body {
+    width: 100px;
+    height: 50px;
+    background-color: #1e88e5;
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    position: absolute;
+    top: 5px;
+    left: 0;
+}
+
+.whale-eye {
+    width: 6px;
+    height: 6px;
+    background-color: #000;
+    border-radius: 50%;
+    position: absolute;
+    top: 20px;
+    left: 15px;
+}
+
+.whale-mouth {
+    width: 15px;
+    height: 5px;
+    border-bottom: 2px solid #0d47a1;
+    border-radius: 0 0 10px 10px;
+    position: absolute;
+    top: 30px;
+    left: 10px;
+}
+
+.whale-tail {
+    width: 20px;
+    height: 30px;
+    background-color: #1e88e5;
+    position: absolute;
+    right: 0;
+    top: 15px;
+    border-radius: 50% 0 0 50% / 50% 0 0 50%;
+    transform-origin: left center;
+    animation: whale-tail 1s infinite alternate;
+}
+
+.whale-spout {
+    width: 8px;
+    height: 20px;
+    background-color: #bbdefb;
+    border-radius: 4px;
+    position: absolute;
+    top: -15px;
+    left: 30px;
+    animation: whale-spout 2s infinite;
+}
+
+@keyframes whale-swim {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-10px) rotate(2deg); }
+}
+
+@keyframes whale-tail {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(20deg); }
+}
+
+@keyframes whale-spout {
+    0%, 100% { height: 0; opacity: 0; }
+    50% { height: 20px; opacity: 0.8; }
+}
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            .pet {
+                transform: scale(0.7);
+            }
+            
+            .cat { left: 2%; }
+            .dog { right: 2%; }
+            .guinea-pig { left: 1%; }
+            .rabbit { right: 1%; }
+            .horse { left: 70%; }
+            .fish { right: 5%; }
+            .turtle { left: 2%; }
+            .hamster { right: 2%; }
+            .ferret { right: 5%; }
+        }
+    </style>
+</head>
+<body>
+		  <!-- NAVBAR -->
+  <div class="navbar">
+    <a href="home.html">Home</a>
+    <a href="heart.html">Heart Monitor</a>
+    <a href="voice.html">Voice</a>
+    <a href="frequency.html">Term Frequency</a>
+    <a href="instructor.html">Instructor</a>
+  </div>
+
+    <!-- Animal elements -->
+ 
+        <div class="pet dog">
+            <div class="eye left"></div>
+            <div class="eye right"></div>
+            <div class="nose"></div>
+            <div class="tongue"></div>
+        </div>
+        
+        <div class="pet guinea-pig">
+            <div class="ear left"></div>
+            <div class="ear right"></div>
+            <div class="eye left"></div>
+            <div class="eye right"></div>
+            <div class="nose"></div>
+        </div>
+        
+        <div class="pet rabbit">
+            <div class="ear left"></div>
+            <div class="ear right"></div>
+            <div class="eye left"></div>
+            <div class="eye right"></div>
+            <div class="nose"></div>
+            <div class="mouth"></div>
+        </div>
+        
+       
+        <div class="pet fish">
+            <div class="eye"></div>
+            <div class="fin"></div>
+        </div>
+        
+        <div class="pet turtle">
+            <div class="shell"></div>
+            <div class="head"></div>
+            <div class="eye"></div>
+            <div class="leg left"></div>
+            <div class="leg right"></div>
+        </div>
+        
+        <div class="pet hamster">
+            <div class="ear left"></div>
+            <div class="ear right"></div>
+            <div class="eye left"></div>
+            <div class="eye right"></div>
+            <div class="nose"></div>
+            <div class="cheek left"></div>
+            <div class="cheek right"></div>
+        </div>
+        
+    
+		<div class="pet penguin">
+		<div class="penguin-body"></div>
+		<div class="penguin-belly"></div>
+		<div class="penguin-head"></div>
+		<div class="penguin-eye left"></div>
+		<div class="penguin-eye right"></div>
+		<div class="penguin-beak"></div>
+		<div class="penguin-flipper left"></div>
+		<div class="penguin-flipper right"></div>
+		<div class="penguin-foot left"></div>
+		<div class="penguin-foot right"></div>
+	</div>
+	<div class="pet whale">
+    <div class="whale-body"></div>
+    <div class="whale-eye"></div>
+    <div class="whale-mouth"></div>
+    <div class="whale-tail"></div>
+    <div class="whale-spout"></div>
+</div>
+    <div class="container">
+        <!-- Main Content -->
+        <div class="content">
+            <h1>Welcome to CalmPulse Community</h1>
+            
+            <div class="video-container">
+                <!-- YouTube Embed (placeholder) -->
+                <iframe src="C:\Users\user\Downloads\386023594692866052.mp4" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
