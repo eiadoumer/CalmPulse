@@ -62,7 +62,7 @@ function App() {
     // Determine user type and name based on email
     if (email.includes('caregiver')) {
       userType = 'caregiver';
-      userName = 'Samira J';
+      userName = 'Samira Jawish';
     } else if (email.includes('professional')) {
       userType = 'professional';
       userName = 'Dr. Nour Falha';
