@@ -45,6 +45,33 @@
 pip install -r requirements.txt
 ```
 
+### Backend 
+
+#### 1. Running the backend:
+```bash
+cd Backend
+uvicorn app.main:app --reload --port 8000
+```
+
+
+### Frontend
+```bash
+cd frontend
+```
+### Downloading the dependencies
+```bash
+npm install
+```
+
+### 2. Running the Frontend
+
+```bash
+npm run start
+```
+
+
+
+
 ### SensorServer Setup
 
 Install **SensorServer** from the Play Store on your Android device and ensure:
