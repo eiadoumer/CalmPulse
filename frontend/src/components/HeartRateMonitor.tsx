@@ -284,7 +284,7 @@ const HeartRateMonitor: React.FC = () => {
         <button
           onClick={handleRefresh}
           disabled={isRefreshing}
-          className="flex items-center space-x-2 bg-white border border-gray-300 rounded-lg px-4 py-2 hover:bg-gray-50 transition-colors disabled:opacity-50"
+          className="flex items-center space-x-2 bg-black border border-gray-300 rounded-lg px-4 py-2 hover:bg-black-50 transition-colors disabled:opacity-50"
         >
           <RefreshCw className={`h-4 w-4 ${isRefreshing ? 'animate-spin' : ''}`} />
           <span>Refresh</span>

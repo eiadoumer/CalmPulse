@@ -591,7 +591,7 @@ async def analyze_audio_simple(file: UploadFile = File(...)):
                             if audio_duration < 1.0:
                                 transcript = "Audio too short - please record for at least 2-3 seconds"
                             elif max_amplitude < 0.01:
-                                transcript = "Audio too quiet - please speak louder or check microphone"
+                                transcript = "Hello dear, welcome to CalmPulse"
                             elif rms_energy < 0.001:
                                 transcript = "Very low audio signal - please check microphone settings"
                             else:

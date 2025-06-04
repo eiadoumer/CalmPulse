@@ -148,7 +148,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
               onClick={() => handleDemoLogin('demo@patient.com', 'demo123')}
               className="w-full bg-blue-50 hover:bg-blue-100 text-blue-700 py-3 px-4 rounded-xl font-medium transition-colors border border-blue-200"
             >
-              🧑‍🦱 Demo as Individual User
+              🧑‍🦱 Sign in as Individual User
             </button>
             
             <button
@@ -156,7 +156,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
               onClick={() => handleDemoLogin('demo@caregiver.com', 'demo123')}
               className="w-full bg-green-50 hover:bg-green-100 text-green-700 py-3 px-4 rounded-xl font-medium transition-colors border border-green-200"
             >
-              👨‍👩‍👧‍👦 Demo as Family Caregiver
+              👨‍👩‍👧‍👦 Sign in as Family Caregiver
             </button>
             
             <button
@@ -164,7 +164,7 @@ const LoginPage: React.FC<LoginPageProps> = ({ onLogin }) => {
               onClick={() => handleDemoLogin('demo@professional.com', 'demo123')}
               className="w-full bg-purple-50 hover:bg-purple-100 text-purple-700 py-3 px-4 rounded-xl font-medium transition-colors border border-purple-200"
             >
-              👩‍⚕️ Demo as Healthcare Professional
+              👩‍⚕️ Sign in as Healthcare Professional
             </button>
           </div>
 
