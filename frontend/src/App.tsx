@@ -54,7 +54,7 @@ function App() {
 
   const handleLogin = (email: string, password: string) => {
     // Simulate authentication logic
-    // In a real app, you would make an API call here
+    
 
     let userType: 'patient' | 'caregiver' | 'professional' = 'patient';
     let userName = 'User';
