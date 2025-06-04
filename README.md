@@ -10,11 +10,7 @@
 
 * **Interactive caregiver dashboard** for real-time activity and emotional summaries.
 * **Child-friendly interface** with customizable animal avatars.
-* Visual timeline and alerts like:
-
-  * *"Emma had a panic attack at 3:00 PM"*
-  * *"Calm and stable from 1:00 PM to 2:15 PM"*
-
+  
 ###  Backend
 
 * WebSocket integration with **SensorServer** to capture:
